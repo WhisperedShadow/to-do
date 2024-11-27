@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My To-do</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    
+
+    <header>
+        <h1>My Schedule of works</h1>
+        <p>Planning tasks for each work...</p>
+    </header>
+    <section id="add-works">
+        <form action="">
+            <label for="work-input">Add-work here</label>
+            <input type="text" name="" id="work-input" required>
+            <br>
+            <input type="submit" value="Add work" onclick="addWork(event)">
+        </form>
+    </section>
+    <section id="works"></section>
+    <script src="script.js"></script>
+
+<div id="overlay-container">
+    <p onclick="closeOverlay()" style="color: aliceblue; cursor: pointer; position: fixed; top: 50px; right: 50px;">X - Close</p>
+    <div id="overlay-content">
+        <label for="update-input">Type to update</label>
+    <input type="text" name="" id="update-input">
+    <button id="overlay-button" >update</button>
+    </div>
+</div>
+
+</body>
+
+</html>
