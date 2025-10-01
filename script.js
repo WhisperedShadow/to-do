@@ -1,118 +1,139 @@
+window.onload = () => {
+    showWorks();
+    populateOrderWindow();
+    populateTaskSelector();
+};
+
+// Toggle Add Work Form
+document.getElementById('toggle-add-work').onclick = () => {
+    document.getElementById('add-work-form').classList.toggle('active');
+};
+
+// Toggle Ordering Window
+document.getElementById('toggle-ordering').onclick = () => {
+    const win = document.getElementById('ordering-window');
+    win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+    populateOrderWindow();
+};
+
+// Show Works
 function showWorks() {
-    let works = localStorage.getItem('works');
-    works = works ? JSON.parse(works) : [];
-    works.forEach(work => {
-        createWork(work);
-    });
+    const works = JSON.parse(localStorage.getItem('works')) || [];
+    const container = document.getElementById('works');
+    container.innerHTML = '';
+    works.forEach(work => createWork(work));
 }
 
+// Create Work
 function createWork(work) {
-    let tasks = localStorage.getItem(work);
-    tasks = tasks ? JSON.parse(tasks) : [];
-
-    let taskBar = document.createElement('div');
+    const tasks = JSON.parse(localStorage.getItem(work)) || [];
+    const taskBar = document.createElement('div');
     taskBar.className = 'taskBar';
 
-    let taskName = document.createElement('h3');
-    taskName.textContent = work;
-    taskBar.appendChild(taskName);
+    const header = document.createElement('div');
+    header.style.display = 'flex';
+    header.style.justifyContent = 'space-between';
 
-    let deletefull = document.createElement('button');
-    deletefull.textContent = 'Delete work';
-    deletefull.onclick = () => deleteWork(work);
-    taskBar.appendChild(deletefull);
+    const h3 = document.createElement('h3');
+    h3.textContent = work;
 
-    let addTask = document.createElement('div');
+    const delBtn = document.createElement('button');
+    delBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+    delBtn.onclick = () => deleteWork(work);
+
+    header.appendChild(h3);
+    header.appendChild(delBtn);
+    taskBar.appendChild(header);
+
+    const addTask = document.createElement('div');
     addTask.className = 'addTask';
-
-    let taskInput = document.createElement('input');
-    taskInput.type = 'text';
-    let submitTask = document.createElement('button');
-    submitTask.textContent = 'Add task';
-    submitTask.onclick = () => {
-        if (taskInput.value) {
-            let tasks = JSON.parse(localStorage.getItem(work)) || [];
-            tasks.push({ text: taskInput.value, completed: false });
+    addTask.innerHTML = `<input type="text" placeholder="Add task">
+                         <button><i class="fa-solid fa-plus"></i></button>`;
+    const input = addTask.querySelector('input');
+    const btn = addTask.querySelector('button');
+    btn.onclick = () => {
+        if (input.value) {
+            tasks.push({ text: input.value, completed: false });
             localStorage.setItem(work, JSON.stringify(tasks));
-            showTask({ text: taskInput.value, completed: false }, taskBar.querySelector('ol'), work);
-            taskInput.value = '';
+            showWorks();
         }
     };
-    addTask.appendChild(taskInput);
-    addTask.appendChild(submitTask);
     taskBar.appendChild(addTask);
 
-    let tasksContainer = document.createElement('div');
+    const tasksContainer = document.createElement('div');
     tasksContainer.className = 'tasks';
-    let ol = document.createElement('ol');
-    tasks.forEach(task => {
-        showTask(task, ol, work);
-    });
+    const ol = document.createElement('ol');
+    tasks.forEach(task => showTask(task, ol, work));
     tasksContainer.appendChild(ol);
     taskBar.appendChild(tasksContainer);
 
     document.getElementById('works').appendChild(taskBar);
 }
 
+// Show Task
 function showTask(task, ol, work) {
-    let taskItem = document.createElement('li');
+    const li = document.createElement('li');
 
-    let chbtn = document.createElement('input');
-    chbtn.type = 'checkbox';
-    chbtn.checked = task.completed;
-    chbtn.onclick = (event) => finishTask(event, taskItem, task, work);
-    taskItem.appendChild(chbtn);
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = task.completed;
+    checkbox.onclick = (e) => finishTask(e, li, task, work);
+    li.appendChild(checkbox);
 
-    let content = document.createElement('span');
-    content.textContent = task.text;
-    content.style.textDecoration = task.completed ? 'line-through' : 'none';
-    taskItem.appendChild(content);
+    const span = document.createElement('span');
+    span.textContent = task.text;
+    span.style.textDecoration = task.completed ? 'line-through' : 'none';
+    li.appendChild(span);
 
-    let delbtn = document.createElement('button');
-    delbtn.textContent = 'Delete';
-    delbtn.onclick = () => deleteTask(task, work);
-    taskItem.appendChild(delbtn);
-
-    let upbtn = document.createElement('button');
-    upbtn.textContent = 'Update';
+    const upbtn = document.createElement('button');
+    upbtn.innerHTML = '<i class="fa-solid fa-pen"></i>';
     upbtn.onclick = () => showUpdate(task, work);
-    taskItem.appendChild(upbtn);
+    li.appendChild(upbtn);
 
-    ol.appendChild(taskItem);
+    const delbtn = document.createElement('button');
+    delbtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+    delbtn.onclick = () => deleteTask(task, work);
+    li.appendChild(delbtn);
+
+    ol.appendChild(li);
 }
 
 function finishTask(event, li, task, work) {
-    let tasks = JSON.parse(localStorage.getItem(work));
-    let index = tasks.findIndex(t => t.text === task.text);
+    const tasks = JSON.parse(localStorage.getItem(work));
+    const index = tasks.findIndex(t => t.text === task.text);
     tasks[index].completed = event.target.checked;
     localStorage.setItem(work, JSON.stringify(tasks));
     li.children[1].style.textDecoration = event.target.checked ? 'line-through' : 'none';
 }
 
-function deleteTask(task, work) {
-    let tasks = JSON.parse(localStorage.getItem(work));
-    tasks = tasks.filter(item => item.text !== task.text);
-    localStorage.setItem(work, JSON.stringify(tasks));
-    location.reload();
-}
-
 function addWork(event) {
     event.preventDefault();
-    let workInput = document.getElementById('work-input');
-    if (workInput.value !== '') {
-        let works = JSON.parse(localStorage.getItem('works')) || [];
-        works.push(workInput.value);
-        localStorage.setItem('works', JSON.stringify(works));
-        location.reload();
-    }
+    const input = document.getElementById('work-input');
+    if (!input.value) return;
+    const works = JSON.parse(localStorage.getItem('works')) || [];
+    works.push(input.value);
+    localStorage.setItem('works', JSON.stringify(works));
+    input.value = '';
+    showWorks();
+    populateOrderWindow();
+    populateTaskSelector();
 }
 
 function deleteWork(work) {
-    let works = JSON.parse(localStorage.getItem('works'));
-    works = works.filter(item => item !== work);
+    let works = JSON.parse(localStorage.getItem('works')) || [];
+    works = works.filter(w => w !== work);
     localStorage.setItem('works', JSON.stringify(works));
     localStorage.removeItem(work);
-    location.reload();
+    showWorks();
+    populateOrderWindow();
+    populateTaskSelector();
+}
+
+function deleteTask(task, work) {
+    let tasks = JSON.parse(localStorage.getItem(work)) || [];
+    tasks = tasks.filter(t => t.text !== task.text);
+    localStorage.setItem(work, JSON.stringify(tasks));
+    showWorks();
 }
 
 function showUpdate(task, work) {
@@ -122,17 +143,105 @@ function showUpdate(task, work) {
 }
 
 function updateTask(task, work) {
-    let updated = document.getElementById('update-input').value;
-    let tasks = JSON.parse(localStorage.getItem(work));
-    let index = tasks.findIndex(t => t.text === task.text);
-    tasks[index].text = updated;
+    let tasks = JSON.parse(localStorage.getItem(work)) || [];
+    const index = tasks.findIndex(t => t.text === task.text);
+    tasks[index].text = document.getElementById('update-input').value;
     localStorage.setItem(work, JSON.stringify(tasks));
-    document.getElementById('overlay-container').style.display = 'none';
-    location.reload();
+    closeOverlay();
+    showWorks();
 }
 
+/* ---------------- Overlay ---------------- */
 function closeOverlay() {
     document.getElementById('overlay-container').style.display = 'none';
 }
 
-window.onload = showWorks;
+/* ---------------- Drag & Drop Ordering ---------------- */
+function populateOrderWindow() {
+    const orderList = document.getElementById('order-list');
+    orderList.innerHTML = '';
+    const works = JSON.parse(localStorage.getItem('works')) || [];
+    works.forEach(work => {
+        const li = document.createElement('li');
+        li.draggable = true;
+        li.innerHTML = `<span class="drag-handle"><i class="fa-solid fa-grip-lines"></i></span>${work}`;
+        orderList.appendChild(li);
+
+        li.ondragstart = e => { e.dataTransfer.setData('text/plain', work); li.classList.add('dragging'); };
+        li.ondragend = () => li.classList.remove('dragging');
+    });
+
+    orderList.ondragover = e => {
+        e.preventDefault();
+        const dragging = document.querySelector('.dragging');
+        const afterElement = getDragAfterElement(orderList, e.clientY);
+        if (!afterElement) orderList.appendChild(dragging);
+        else orderList.insertBefore(dragging, afterElement);
+    };
+}
+
+function getDragAfterElement(container, y) {
+    const elements = [...container.querySelectorAll('li:not(.dragging)')];
+    return elements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height/2;
+        if (offset < 0 && offset > closest.offset) return { offset, element: child };
+        return closest;
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+function saveOrder() {
+    // Save works order
+    const newOrder = [...document.querySelectorAll('#order-list li')].map(li => li.textContent.trim());
+    localStorage.setItem('works', JSON.stringify(newOrder));
+
+    // Save task order if selected
+    const selectedWork = document.getElementById('select-work-for-tasks').value;
+    if (selectedWork) {
+        const taskOrder = [...document.querySelectorAll('#order-task-list li')].map(li => li.textContent.trim());
+        const tasks = JSON.parse(localStorage.getItem(selectedWork));
+        const newTasks = taskOrder.map(text => tasks.find(t => t.text === text));
+        localStorage.setItem(selectedWork, JSON.stringify(newTasks));
+    }
+
+    showWorks();
+}
+
+/* ---------------- Task Ordering ---------------- */
+function populateTaskSelector() {
+    const select = document.getElementById('select-work-for-tasks');
+    select.innerHTML = '<option value="">Select Work</option>';
+    const works = JSON.parse(localStorage.getItem('works')) || [];
+    works.forEach(work => {
+        const option = document.createElement('option');
+        option.value = work;
+        option.textContent = work;
+        select.appendChild(option);
+    });
+    document.getElementById('order-task-list').innerHTML = '';
+}
+
+document.getElementById('select-work-for-tasks').onchange = function() {
+    const work = this.value;
+    const list = document.getElementById('order-task-list');
+    list.innerHTML = '';
+    if (!work) return;
+    const tasks = JSON.parse(localStorage.getItem(work)) || [];
+    tasks.forEach(task => {
+        const li = document.createElement('li');
+        li.draggable = true;
+        li.innerHTML = `<span class="drag-handle"><i class="fa-solid fa-grip-lines"></i></span>${task.text}`;
+        list.appendChild(li);
+
+        li.ondragstart = e => { e.dataTransfer.setData('text/plain', task.text); li.classList.add('dragging'); };
+        li.ondragend = () => li.classList.remove('dragging');
+    });
+
+    list.ondragover = e => {
+        e.preventDefault();
+        const dragging = document.querySelector('#order-task-list .dragging');
+        const afterElement = getDragAfterElement(list, e.clientY);
+        if (!afterElement) list.appendChild(dragging);
+        else list.insertBefore(dragging, afterElement);
+    };
+};

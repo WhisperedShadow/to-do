@@ -1,209 +1,252 @@
 :root {
-    --primary-color: #007bff;
-    --primary-hover: #0056b3;
-    --secondary-color: #6c757d;
-    --danger-color: #dc3545;
-    --danger-hover: #c82333;
-    --success-color: #28a745;
-    --success-hover: #218838;
-    --warning-color: #dc3545;
-    --warning-hover: #c82333;
-    --info-color: #17a2b8;
-    --info-hover: #138496;
+    /* Colors */
+    --color-bg: #f4f4f9;
+    --color-primary: #4e54c8;
+    --color-primary-light: #6c63ff;
+    --color-text: #333;
+    --color-white: #fff;
+    --color-task-bg: #f0f0f5;
+    --color-task-border: #ddd;
+    --color-overlay: rgba(0, 0, 0, 0.6);
+    --color-drag-handle: #888;
+    --color-drag-handle-active: #555;
+
+    /* Spacing */
+    --space-xs: 5px;
+    --space-sm: 10px;
+    --space-md: 15px;
+    --space-lg: 20px;
+
+    /* Fonts */
+    --font-main: 'Segoe UI', sans-serif;
+    --font-size-base: 1rem;
+    --font-size-small: 0.875rem;
+    --font-size-large: 1.2rem;
+
+    /* Border radius */
+    --radius-sm: 5px;
+    --radius-md: 10px;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 10px rgba(0,0,0,0.1);
+    --shadow-md: 0 3px 15px rgba(0,0,0,0.2);
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f7f9fc;
+    font-family: var(--font-main);
     margin: 0;
-    padding: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+}
+
+nav {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 100vh;
+    justify-content: space-between;
+    background: var(--color-primary);
+    color: var(--color-white);
+    padding: var(--space-md) var(--space-lg);
+    position: sticky;
+    top: 0;
 }
 
-header {
-    text-align: center;
-    margin: 50px 0px 20px 0px;
-}
-
-header h1 {
-    font-size: 2.5em;
-    color: #343a40;
+nav h1 {
     margin: 0;
+    font-size: var(--font-size-large);
 }
 
-header p {
-    font-size: 1.2em;
-    color: var(--secondary-color);
-}
-
-#add-works {
-    margin-bottom: 30px;
-}
-
-#add-works form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#work-input {
-    padding: 10px;
-    font-size: 1em;
-    width: 250px;
-    border: 2px solid var(--primary-color);
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-input[type="submit"] {
-    padding: 10px 20px;
-    background-color: var(--primary-color);
-    color: white;
-    font-size: 1em;
-    border: none;
-    border-radius: 5px;
+.nav-icons i {
+    font-size: 20px;
+    margin-left: var(--space-sm);
     cursor: pointer;
-    transition: background-color 0.3s;
 }
 
-input[type="submit"]:hover {
-    background-color: var(--primary-hover);
+#add-work-form {
+    display: flex;
+    gap: var(--space-xs);
+    align-items: center;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.4s ease;
+}
+
+#add-work-form input {
+    padding: var(--space-xs);
+    border-radius: var(--radius-sm);
+    border: none;
+}
+
+#add-work-form button {
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--color-primary-light);
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+#add-work-form.active {
+    max-height: 50px;
+    opacity: 1;
 }
 
 #works {
-    width: 100%;
-    max-width: 500px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-lg);
+    padding: var(--space-lg);
 }
 
 .taskBar {
-    background-color: white;
-    border: 2px solid #dee2e6;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: var(--color-white);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
 }
 
 .taskBar h3 {
-    margin: 0 0 10px 0;
-    font-size: 1.5em;
-    color: #343a40;
-    border-bottom: 1px solid #e9ecef;
-    padding-bottom: 10px;
-}
-
-button {
-    background-color: var(--danger-color);
-    color: white;
-    border: none;
-    padding: 7px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 5px;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: var(--danger-hover);
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
 }
 
 .addTask {
     display: flex;
-    margin-top: 10px;
+    gap: var(--space-xs);
 }
 
-.addTask input[type="text"] {
-    padding: 8px;
-    font-size: 1em;
-    width: 150px;
-    border: 2px solid var(--secondary-color);
-    border-radius: 5px;
+.addTask input {
+    flex: 1;
+    padding: var(--space-xs);
 }
 
 .addTask button {
-    background-color: var(--success-color);
-    color: white;
-    margin-left: 10px;
-}
-
-.addTask button:hover {
-    background-color: var(--success-hover);
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
 }
 
 .tasks ol {
-    list-style-type: none;
+    list-style: none;
     padding-left: 0;
 }
 
 .tasks li {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    background-color: #f1f3f5;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
-    border: 1px solid #e9ecef;
+    gap: var(--space-sm);
+    padding: var(--space-xs);
+    background: var(--color-task-bg);
+    border-radius: var(--radius-sm);
 }
 
 .tasks li span {
     flex: 1;
-    margin-left: 10px;
-    color: #495057;
-}
-
-.tasks input[type="checkbox"] {
-    cursor: pointer;
 }
 
 .tasks button {
-    background-color: var(--warning-color);
-    margin-left: 5px;
-}
-
-.tasks button:hover {
-    background-color: var(--warning-hover);
-}
-
-.tasks .delete-btn {
-    background-color: var(--danger-color);
-}
-
-.tasks .delete-btn:hover {
-    background-color: var(--danger-hover);
-}
-
-.tasks .update-btn {
-    background-color: var(--info-color);
-}
-
-.tasks .update-btn:hover {
-    background-color: var(--info-hover);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-primary);
 }
 
 #overlay-container {
-    background-color: rgba(12, 11, 11, 0.5);
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--color-overlay);
+    justify-content: center;
+    align-items: center;
 }
 
 #overlay-content {
-    background-color: white;
-    width: 30%;
-    aspect-ratio: 10/3;
+    background: var(--color-white);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+}
+
+.close-btn {
+    position: fixed;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    cursor: pointer;
+    color: var(--color-white);
+    font-size: 18px;
+}
+
+.drag-handle {
+    cursor: grab;
+    color: var(--color-drag-handle);
+}
+
+#ordering-window {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    min-width: 280px;
+    background: var(--color-white);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    box-shadow: var(--shadow-md);
+    display: none;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+#ordering-window ul {
+    list-style: none;
+    padding: 0;
+}
+
+#ordering-window li {
     display: flex;
     align-items: center;
-    justify-content: center;
-    border-radius: 15px;
+    gap: var(--space-sm);
+    padding: var(--space-xs);
+    border: 1px solid var(--color-task-border);
+    margin-bottom: var(--space-xs);
+    border-radius: var(--radius-sm);
+    background: #f9f9f9;
+}
+
+#ordering-window li .drag-handle {
+    cursor: grab;
+    color: var(--color-drag-handle-active);
+}
+
+
+
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #works {
+        grid-template-columns: 1fr;
+        padding: var(--space-md);
+    }
+
+    #ordering-window {
+        width: 90%;
+        top: 70px;
+        right:auto;
+    }
+
+    .addTask {
+        flex-direction: column;
+        gap: var(--space-xs);
+    }
+
+    .addTask input, .addTask button {
+        width: 100%;
+    }
 }

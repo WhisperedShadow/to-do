@@ -7,35 +7,52 @@
     <title>My To-do</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="https://w7.pngwing.com/pngs/491/126/png-transparent-questionnaire-test-exam-to-do-list-notes-icon-thumbnail.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
-    
+    <nav>
+        <h1>My Schedule of Works</h1>
+        <div class="nav-icons">
+            <i class="fa-solid fa-plus" id="toggle-add-work" title="Add Work"></i>
+            <i class="fa-solid fa-arrows-up-down-left-right" id="toggle-ordering" title="Reorder Works & Tasks"></i>
+        </div>
 
-    <header>
-        <h1>My Schedule of works</h1>
-        <p>Planning tasks for each work...</p>
-    </header>
-    <section id="add-works">
-        <form action="">
-            <label for="work-input">Add-work here</label>
-            <input type="text" name="" id="work-input" required>
-            <br>
-            <input type="submit" value="Add work" onclick="addWork(event)">
+        <form id="add-work-form">
+            <input type="text" id="work-input" placeholder="Add work..." required>
+            <button type="submit" onclick="addWork(event)"><i class="fa-solid fa-check"></i></button>
         </form>
-    </section>
+    </nav>
+
     <section id="works"></section>
-    <script src="script.js"></script>
 
-<div id="overlay-container">
-    <p onclick="closeOverlay()" style="color: aliceblue; cursor: pointer; position: fixed; top: 50px; right: 50px;">X - Close</p>
-    <div id="overlay-content">
-        <label for="update-input">Type to update</label>
-    <input type="text" name="" id="update-input">
-    <button id="overlay-button" >update</button>
+    <!-- Floating Ordering Window -->
+    <aside id="ordering-window">
+        <h3>Reorder Works & Tasks</h3>
+        <div id="order-works">
+            <h4>Works</h4>
+            <ul id="order-list"></ul>
+        </div>
+        <div id="order-tasks">
+            <h4>Tasks</h4>
+            <select id="select-work-for-tasks">
+                <option value="">Select Work</option>
+            </select>
+            <ul id="order-task-list"></ul>
+        </div>
+        <button onclick="saveOrder()"><i class="fa-solid fa-floppy-disk"></i> Save Order</button>
+    </aside>
+
+    <!-- Overlay for Updating Tasks -->
+    <div id="overlay-container">
+        <p onclick="closeOverlay()" class="close-btn">X - Close</p>
+        <div id="overlay-content">
+            <label for="update-input">Update Task</label>
+            <input type="text" id="update-input">
+            <button id="overlay-button">Update</button>
+        </div>
     </div>
-</div>
 
+    <script src="script.js"></script>
 </body>
-
 </html>
